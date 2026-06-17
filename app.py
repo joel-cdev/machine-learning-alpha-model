@@ -112,7 +112,7 @@ st.sidebar.header("Model Inputs")
 
 ticker = st.sidebar.text_input("Stock ticker", value="AAPL")
 start_date = st.sidebar.text_input("Start date", value="2018-01-01")
-model_choice = st.sidebar.selectbox("Model", ["Random Forest", "XGBoost", "LSTM"])
+model_choice = st.sidebar.selectbox("Model", ["Random Forest", "XGBoost"])
 
 run_model = st.sidebar.button("Run Model")
 
