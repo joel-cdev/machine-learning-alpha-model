@@ -1,4 +1,5 @@
 from src.data_loader import download_stock_data
+from src.visualizations import get_feature_importance, plot_feature_importance
 from src.features import create_features
 from src.models import (
     FEATURE_COLUMNS,
@@ -34,9 +35,19 @@ def main():
     rf_predictions, rf_metrics = evaluate_model(rf_model, X_test, y_test)
     rf_backtest = create_backtest_results(y_test, rf_predictions)
 
+    rf_importance = get_feature_importance(rf_model, FEATURE_COLUMNS)
+    print("Random Forest Feature Importance:")
+    print(rf_importance)
+    plot_feature_importance(rf_importance, title="Random Forest Feature Importance")
+
     xgb_model = train_xgboost(X_train, y_train)
     xgb_predictions, xgb_metrics = evaluate_model(xgb_model, X_test, y_test)
     xgb_backtest = create_backtest_results(y_test, xgb_predictions)
+
+    xgb_importance = get_feature_importance(xgb_model, FEATURE_COLUMNS)
+    print("XGBoost Feature Importance:")
+    print(xgb_importance)
+    plot_feature_importance(xgb_importance, title="XGBoost Feature Importance")
 
     X_lstm, y_lstm, _ = create_lstm_sequences(df, FEATURE_COLUMNS, sequence_length=20)
 
