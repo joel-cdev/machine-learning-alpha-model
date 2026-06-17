@@ -1,6 +1,9 @@
+import numpy as np
+
 from sklearn.ensemble import RandomForestRegressor
-from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.preprocessing import MinMaxScaler
+from xgboost import XGBRegressor
 
 
 FEATURE_COLUMNS = [
@@ -57,6 +60,64 @@ def train_xgboost(X_train, y_train):
 
 def evaluate_model(model, X_test, y_test):
     predictions = model.predict(X_test)
+
+    metrics = {
+        "mse": mean_squared_error(y_test, predictions),
+        "mae": mean_absolute_error(y_test, predictions),
+        "r2": r2_score(y_test, predictions),
+    }
+
+    return predictions, metrics
+
+
+def create_lstm_sequences(df, feature_columns, target_column="Target", sequence_length=20):
+    scaler = MinMaxScaler()
+
+    features = df[feature_columns].values
+    target = df[target_column].values
+
+    scaled_features = scaler.fit_transform(features)
+
+    X = []
+    y = []
+
+    for i in range(sequence_length, len(scaled_features)):
+        X.append(scaled_features[i - sequence_length:i])
+        y.append(target[i])
+
+    return np.array(X), np.array(y), scaler
+
+
+def train_lstm_model(X_train, y_train, epochs=10, batch_size=32):
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.layers import LSTM, Dense, Dropout
+
+    model = Sequential([
+        LSTM(64, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])),
+        Dropout(0.2),
+        LSTM(32),
+        Dropout(0.2),
+        Dense(1)
+    ])
+
+    model.compile(
+        optimizer="adam",
+        loss="mean_squared_error"
+    )
+
+    model.fit(
+        X_train,
+        y_train,
+        epochs=epochs,
+        batch_size=batch_size,
+        verbose=1
+    )
+
+    return model
+
+
+def evaluate_lstm_model(model, X_test, y_test):
+    predictions = model.predict(X_test).flatten()
 
     metrics = {
         "mse": mean_squared_error(y_test, predictions),
