@@ -14,6 +14,7 @@ from src.models import (
     evaluate_lstm_model,
 )
 from src.backtest import create_backtest_results, calculate_sharpe_ratio
+from src.visualizations import get_feature_importance
 
 
 st.set_page_config(page_title="Machine Learning Alpha Model", page_icon="📊", layout="wide")
@@ -224,6 +225,20 @@ if run_model:
     ax2.set_ylabel("Predicted Returns")
     ax2.grid(True)
     st.pyplot(fig2)
+
+    if model_choice in ["Random Forest", "XGBoost"]:
+        st.markdown("<div class='section-title'>Feature Importance</div>", unsafe_allow_html=True)
+
+        importance_df = get_feature_importance(model, FEATURE_COLUMNS)
+
+        fig3, ax3 = plt.subplots(figsize=(11, 5))
+        ax3.barh(importance_df["Feature"], importance_df["Importance"])
+        ax3.set_title(f"{model_choice} Feature Importance")
+        ax3.set_xlabel("Importance")
+        ax3.set_ylabel("Feature")
+        ax3.invert_yaxis()
+        ax3.grid(True)
+        st.pyplot(fig3)
 
     st.markdown("<div class='section-title'>Recent Feature Data</div>", unsafe_allow_html=True)
     st.dataframe(df.tail(10), use_container_width=True)
