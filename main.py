@@ -7,6 +7,7 @@ from src.models import (
     evaluate_model,
 )
 from src.backtest import create_backtest_results, calculate_sharpe_ratio
+from src.visualizations import plot_backtest_results, plot_predictions
 
 
 def main():
@@ -42,6 +43,12 @@ def main():
     print("XGBoost Strategy Final Value:", round(xgb_backtest["Strategy_Cumulative"].iloc[-1], 4))
     print("XGBoost Buy & Hold Final Value:", round(xgb_backtest["Buy_Hold_Cumulative"].iloc[-1], 4))
     print("XGBoost Sharpe:", round(calculate_sharpe_ratio(xgb_backtest["Strategy_Return"]), 4))
+
+    plot_backtest_results(rf_backtest, title="Random Forest Strategy vs Buy and Hold")
+    plot_predictions(y_test, rf_predictions, title="Random Forest Actual vs Predicted Returns")
+
+    plot_backtest_results(xgb_backtest, title="XGBoost Strategy vs Buy and Hold")
+    plot_predictions(y_test, xgb_predictions, title="XGBoost Actual vs Predicted Returns")
 
 
 if __name__ == "__main__":
