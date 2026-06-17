@@ -112,7 +112,7 @@ st.sidebar.header("Model Inputs")
 
 ticker = st.sidebar.text_input("Stock ticker", value="AAPL")
 start_date = st.sidebar.text_input("Start date", value="2018-01-01")
-model_choice = st.sidebar.selectbox("Model", ["Random Forest", "XGBoost"])
+model_choice = st.sidebar.selectbox("Model", ["Random Forest", "XGBoost", "LSTM"])
 
 run_model = st.sidebar.button("Run Model")
 
@@ -170,7 +170,6 @@ if run_model:
             )
 
         strategy_final = backtest["Strategy_Cumulative"].iloc[-1]
-        buy_hold_final = backtest["Buy_Hold_Cumulative"].iloc[-1]
         sharpe = calculate_sharpe_ratio(backtest["Strategy_Return"])
 
     st.markdown(
