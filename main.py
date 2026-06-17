@@ -6,6 +6,7 @@ from src.models import (
     train_xgboost,
     evaluate_model,
 )
+from src.backtest import create_backtest_results, calculate_sharpe_ratio
 
 
 def main():
@@ -22,16 +23,25 @@ def main():
     rf_predictions, rf_metrics = evaluate_model(rf_model, X_test, y_test)
     xgb_predictions, xgb_metrics = evaluate_model(xgb_model, X_test, y_test)
 
+    rf_backtest = create_backtest_results(y_test, rf_predictions)
+    xgb_backtest = create_backtest_results(y_test, xgb_predictions)
+
     print(f"Machine Learning Alpha Model for {ticker}")
     print("--------------------------------------")
 
     print("Random Forest Metrics:")
     print(rf_metrics)
+    print("Random Forest Strategy Final Value:", round(rf_backtest["Strategy_Cumulative"].iloc[-1], 4))
+    print("Random Forest Buy & Hold Final Value:", round(rf_backtest["Buy_Hold_Cumulative"].iloc[-1], 4))
+    print("Random Forest Sharpe:", round(calculate_sharpe_ratio(rf_backtest["Strategy_Return"]), 4))
 
     print()
 
     print("XGBoost Metrics:")
     print(xgb_metrics)
+    print("XGBoost Strategy Final Value:", round(xgb_backtest["Strategy_Cumulative"].iloc[-1], 4))
+    print("XGBoost Buy & Hold Final Value:", round(xgb_backtest["Buy_Hold_Cumulative"].iloc[-1], 4))
+    print("XGBoost Sharpe:", round(calculate_sharpe_ratio(xgb_backtest["Strategy_Return"]), 4))
 
 
 if __name__ == "__main__":
