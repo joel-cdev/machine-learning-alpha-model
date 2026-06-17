@@ -199,7 +199,3 @@ This project is for educational purposes only.
 It is not financial advice and does not guarantee trading performance.
 
 ---
-
-## Repository Description
-
-> CS practice project using Random Forest, XGBoost, and LSTM models to predict stock returns with feature engineering, backtesting, and an animated Streamlit dashboard. 📊🐍
